@@ -1,5 +1,7 @@
 ﻿using Eticaret.Core.Entities;
+using Eticaret.Data.Configurations;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 
 namespace Eticaret.Data
@@ -17,8 +19,18 @@ namespace Eticaret.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"");
+            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB; Database=EticaretDb; Trusted_Connection = True; TrustServerCertificate=True; ");
             base.OnConfiguring(optionsBuilder);
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            //modelBuilder.ApplyConfiguration(new AppUserConfiguration());
+            //modelBuilder.ApplyConfiguration(new BrandConfiguration());
+
+            modelBuilder.ApplyConfigurationsFromAssembly
+                (Assembly.GetExecutingAssembly()); // çalışan dll içinden bul
+            base.OnModelCreating(modelBuilder);
         }
 
     }
