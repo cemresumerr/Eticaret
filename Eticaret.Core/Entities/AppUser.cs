@@ -1,4 +1,6 @@
-﻿namespace Eticaret.Core.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Eticaret.Core.Entities
 {
     public class AppUser : IEntity
     {
@@ -12,6 +14,7 @@
         public string? UserName { get; set; } 
         public bool IsActive { get; set; }
         public bool IsAdmin { get; set; }
+        
 
         public DateTime CreateDate { get; set; } = DateTime.Now;
 
