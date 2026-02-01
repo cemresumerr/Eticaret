@@ -16,7 +16,7 @@ namespace Eticaret.Core.Entities
       
         public int OrderNo { get; set; }
         public DateTime CreatDate { get; set; }
-        public IList<Product> Products { get; set; }
+        public IList<Product>? Products { get; set; }
 
     }
 }

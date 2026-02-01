@@ -52,8 +52,18 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create( Brand brand, IFormFile? LogoFile)
         {
+
+            foreach (var item in ModelState)
+            {
+                foreach (var error in item.Value.Errors)
+                {
+                    Console.WriteLine($"FIELD: {item.Key} | ERROR: {error.ErrorMessage}");
+                }
+            }
             if (ModelState.IsValid)
             {
+                brand.CreatDate = DateTime.Now;
+
                 if (LogoFile != null)
                 {
                     brand.Logo = await FileHelper.FileLoaderAsync(LogoFile);
@@ -86,7 +96,7 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,  Brand brand)
+        public async Task<IActionResult> Edit(int id,  Brand brand, IFormFile? LogoFile, bool cbResmiSil = false)
         {
             if (id != brand.Id)
             {
@@ -97,6 +107,11 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             {
                 try
                 {
+                    if(cbResmiSil)
+                        brand.Logo = string.Empty;
+
+                    if (LogoFile is not null)
+                    brand.Logo = await FileHelper.FileLoaderAsync(LogoFile);
                     _context.Update(brand);
                     await _context.SaveChangesAsync();
                 }
@@ -142,6 +157,10 @@ namespace Eticaret.WebUI.Areas.Admin.Controllers
             var brand = await _context.Brands.FindAsync(id);
             if (brand != null)
             {
+                if(!string.IsNullOrEmpty(brand.Logo))
+                {
+                    FileHelper.FileRemover(brand.Logo);
+                }
                 _context.Brands.Remove(brand);
             }
 
